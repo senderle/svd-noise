@@ -11741,16 +11741,33 @@ div#notebook {
         }
     });
     </script>
-    <!-- End of mathjax configuration --></head>
+
+    <!-- End of mathjax configuration -->
+	
+	<!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-83883852-1', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
+
+</head>
 <body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
-
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<div class="pull-right">
+    <h4>Scott Enderle<br/><a href="https://twitter.com/scottenderle" style="text-decoration: none">@scottenderle</a>, <a href="http://www.lagado.name/blog/" style="text-decoration: none">etc</a></h4>
+</div>
 <h1 id="A-Plot-of-Brownian-Noise">A Plot of Brownian Noise<a class="anchor-link" href="#A-Plot-of-Brownian-Noise">&#182;</a></h1><p><img src="brownian-noise.png" alt="A Plot of Brownian Noise" style="width: 350px; float: right; margin: 15px;"/>
 This notebook illustrates some of the behaviors of the singular value decomposition of time series data. I've written it in part as a response to <a href="https://arxiv.org/pdf/1606.07772v2.pdf">a paper</a> by Andrew J. Reagan, Lewis Mitchell, Dilan Kiley, Christopher M. Danforth, and Peter Sheridan Dodds recapitulating an argument first made by <a href="http://www.matthewjockers.net/2015/02/25/the-rest-of-the-story/">Matt Jockers</a>: that certain kinds of eigendecompositions of sentiment data from works of fiction will reveal "fundamental plot structures" or "fundamental narrative arcs."</p>
 <p>I have doubts about that argument that I <a href="http://www.lagado.name/blog/sine-of-the-times/">discussed</a> during the <a href="https://storify.com/clancynewyork/contretemps-a-syuzhet">wave</a> of <a href="https://storify.com/clancynewyork/a-fabula-of-syuzhet-ii">debates</a> inspired by Annie Swafford's <a href="https://annieswafford.wordpress.com/syuzhet-blog-posts/">initial critique</a>. At first glance, Reagan et. al. seem to address some of those doubts. But after going over their paper more carefully, I have come to an even more skeptical conclusion: I think that if they have shown anything at all, they have shown that sentiment time series data from works of fiction is best modeled by a particular kind of noise.</p>
