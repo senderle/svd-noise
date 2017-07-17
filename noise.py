@@ -15,14 +15,11 @@ def record(method):
         # method without touching anything.
         if not recorder._record_lock:
             recorder._record_lock = True
-            print("recording lock acquired")
             recorder._record.append((recorded_method, args, kwargs))
             result = method(recorder, *args, **kwargs)
             recorder._record_lock = False
-            print("recording lock released")
             return result
         else:
-            print("recording locked")
             return method(recorder, *args, **kwargs)
 
     return recorded_method
@@ -93,8 +90,6 @@ class Noise(object):
         self.samples = np_rand(-1, 1, self.n_samples)
         if integrate:
             self.integrate()
-            # self._record.pop()  # Don't record inside a recorded method
-            print("would have popped here, mixing in")
 
         self.samples *= proportion
         self.samples += old_samples * (1.0 - proportion)
@@ -263,8 +258,6 @@ class Noise(object):
 
         self.samples = bins.ravel()
         self.autofilter(sample_width, mean)
-        # self._record.pop()  # Don't record inside a recorded method
-        print("would have popped here, resampling")
         return self
 
     @record
