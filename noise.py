@@ -7,8 +7,24 @@ from scipy import signal
 def record(method):
     @wraps(method)
     def recorded_method(recorder, *args, **kwargs):
-        recorder._record.append((method, args, kwargs))
-        return method(recorder, *args, **kwargs)
+
+        # If this isn't being called from within a recorded method,
+        # then we should add the call to the object's record. We
+        # also need to indicate that other calls are coming from
+        # within a recorded method. Otherwise, we just call the
+        # method without touching anything.
+        if not recorder._record_lock:
+            recorder._record_lock = True
+            print("recording lock acquired")
+            recorder._record.append((recorded_method, args, kwargs))
+            result = method(recorder, *args, **kwargs)
+            recorder._record_lock = False
+            print("recording lock released")
+            return result
+        else:
+            print("recording locked")
+            return method(recorder, *args, **kwargs)
+
     return recorded_method
 
 class Noise(object):
@@ -17,6 +33,16 @@ class Noise(object):
         self.sample_rate = sample_rate
         self.samples = None
         self._record = []
+        self._record_lock = False
+
+    def copy(self):
+        new = type(self)()
+        new.duration = self.duration
+        new.sample_rate = self.sample_rate
+        new.samples = numpy.array(self.samples)
+        new._record = list(self._record)
+        new._record_lock = self._record_lock
+        return new
 
     @property
     def n_original_samples(self):
@@ -67,7 +93,8 @@ class Noise(object):
         self.samples = np_rand(-1, 1, self.n_samples)
         if integrate:
             self.integrate()
-            self._record.pop()  # Don't record inside a recorded method
+            # self._record.pop()  # Don't record inside a recorded method
+            print("would have popped here, mixing in")
 
         self.samples *= proportion
         self.samples += old_samples * (1.0 - proportion)
@@ -236,7 +263,8 @@ class Noise(object):
 
         self.samples = bins.ravel()
         self.autofilter(sample_width, mean)
-        self._record.pop()  # Don't record inside a recorded method
+        # self._record.pop()  # Don't record inside a recorded method
+        print("would have popped here, resampling")
         return self
 
     @record
@@ -275,9 +303,9 @@ class Noise(object):
 
     def wav(self):
         """Return data suitable for saving as a PCM or .wav file."""
-        self.scale()
-        self._record.pop()  # Doesn't return self, so don't record
-        return numpy.int16(self.samples)
+        newobj = self.copy()
+        newobj.scale()
+        return numpy.int16(newobj.samples)
 
 if __name__ == '__main__':
     n = Noise().brownian()
@@ -286,4 +314,6 @@ if __name__ == '__main__':
     print(n.resample().samples.sum())
     print(n._record)
     print(n.resample().samples.sum())
+    print(n._record)
+    print(n.wav())
     print(n._record)
